@@ -5,13 +5,13 @@ package com.company;
 public class Console {
     private int key;
     private int value;
-    private String[] file_path;
+    private String[] filePath;
 
     private void accept(String[] answer) {
 
     }
 
-    private static void show_menu() {
+    private static void showMenu() {
         System.out.println("MENU:");
         System.out.println();
         System.out.println("");
@@ -19,7 +19,7 @@ public class Console {
 
     public static void main(String[] args) {
         //while(true) {
-            show_menu();
+            showMenu();
         //}
     }
 
