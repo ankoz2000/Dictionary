@@ -50,7 +50,7 @@ public class file {
         closeFile();
     }
 
-    public void readFromFile() {
+    public void readFromFile(int n) { // Сколько позиций читать?
         try {
             rd = new FileReader(filepath);
         } catch (IOException exception) {
@@ -58,6 +58,8 @@ public class file {
         }
         BufferedReader br = new BufferedReader(rd);
         /* Чтение из файла информации */
+        for(int i = 0; i < n; i++)
+            System.out.println(br.readLine()); // Нужна проверка на возвращаемый NULL
     }
 
 

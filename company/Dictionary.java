@@ -6,3 +6,4 @@ public interface Dictionary {
     public void find(int key);
     public void add(String note);
 }
+
