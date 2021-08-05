@@ -5,9 +5,9 @@ package com.company;
 public class Console {
     private int key;
     private int value;
-    private String[] filePath;
+    private String filePath;
 
-    private void accept(String[] answer) {
+    private void accept(String answer) {
 
     }
 
