@@ -11,18 +11,14 @@ public class file {
     private PrintWriter pw;
     private FileReader rd;
 
-    file() {
-        filepath = "default.txt";
-    }
+    file() { filepath = "default.txt"; }
 
     file(String filepath) {
         setFilePath(filepath);
         openFile();
     }
 
-    public void setFilePath(String filepath) {
-        this.filepath = filepath;
-    }
+    public void setFilePath(String filepath) { this.filepath = filepath; }
 
     public void openFile() {
         try {
@@ -58,8 +54,14 @@ public class file {
         }
         BufferedReader br = new BufferedReader(rd);
         /* Чтение из файла информации */
+        String tempStr;
         for(int i = 0; i < n; i++)
-            System.out.println(br.readLine()); // Нужна проверка на возвращаемый NULL
+            try {
+                tempStr = br.readLine();
+            } catch (IOException exception) {
+                System.out.println("End of file reached: " + exception);
+            }
+            System.out.println(); // Нужна проверка на возвращаемый NULL
     }
 
 

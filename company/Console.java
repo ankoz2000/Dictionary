@@ -1,6 +1,8 @@
 package com.company;
 import java.util.Scanner;
 
+
+
 // Пока делаю ключ-значения интовые, позже переделаю на String
 
 public class Console implements Options {
@@ -8,11 +10,18 @@ public class Console implements Options {
     private int value;
     private String filePath;
     private int option;
+    final private int maxAnswer = 9;
+    final private int minAnswer = 0;
 
-    private void makeChoice(String answer) {
+    private void makeChoice() {
         Scanner in = new Scanner(System.in);
         System.out.print("Input a number: ");
-        option = in.nextInt(); // проверки корректности выбора значений меню (Добавить)
+        do {
+            option = in.nextInt(); // проверки корректности выбора значений меню
+            if (option < minAnswer || option > maxAnswer)
+                System.out.println("Incorrect choice. Try again.");
+        } while (option < minAnswer || option > maxAnswer);
+        decider();
     }
 
     private void decider() {
@@ -44,6 +53,10 @@ public class Console implements Options {
             case DELETE: {
                 break;
             }
+            case QUIT: {
+                System.out.println("Exit...");
+                System.exit(0);
+            }
             default: {
                 /* Default process */
                 break;
@@ -51,16 +64,18 @@ public class Console implements Options {
         }
     }
 
-    private static void showMenu() {
-        System.out.println("MENU:");
-        System.out.println();
-        System.out.println("");
 
+    private void showMenu() {
+        System.out.println("MENU:");
+        System.out.println("");
+        System.out.println("");
+        makeChoice();
     }
 
     public static void main(String[] args) {
+        Console c = new Console();
         //while(true) {
-            showMenu();
+            c.showMenu();
         //}
     }
 

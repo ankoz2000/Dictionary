@@ -10,4 +10,5 @@ public interface Options {
     int SHOW = 6;
     int CHOOSE = 7;
     int DELETE = 8;
+    int QUIT = 9;
 }
