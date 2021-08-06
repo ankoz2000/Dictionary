@@ -5,27 +5,46 @@ import java.util.Scanner;
 
 // Пока делаю ключ-значения интовые, позже переделаю на String
 
-public class Console implements Options {
+public class Console extends Options{
     private int key;
     private int value;
     private String filePath;
     private int option;
     final private int maxAnswer = 9;
     final private int minAnswer = 0;
+    Option op;
 
-    private void makeChoice() {
+    private boolean intInput() {
         Scanner in = new Scanner(System.in);
-        System.out.print("Input a number: ");
         do {
             option = in.nextInt(); // проверки корректности выбора значений меню
-            if (option < minAnswer || option > maxAnswer)
-                System.out.println("Incorrect choice. Try again.");
-        } while (option < minAnswer || option > maxAnswer);
+            if (isNotCorrect())
+                return false;
+        } while (isNotCorrect());
+        return true;
+    }
+
+    private void makeChoice() {
+        System.out.println("Input a number: ");
+        System.out.print(">> ");
+        while(!intInput()) {
+            System.out.println("Incorrect choice. Try again.");
+        }
         decider();
     }
 
+    private boolean isNotCorrect() { return (option < minAnswer || option > maxAnswer); }
+
+    private void getYesOrNo() {
+        Scanner in = new Scanner(System.in);
+        System.out.println("Do you agree? 1 - Yes, 0 - No: ");
+        while(!intInput()) {
+            System.out.println("Incorrect choice. Try again.");
+        }
+    }
+
     private void decider() {
-        switch (option) {
+        switch (Option.values()[option]) {
             case NO: {
                 break;
             }
@@ -67,8 +86,10 @@ public class Console implements Options {
 
     private void showMenu() {
         System.out.println("MENU:");
-        System.out.println("");
-        System.out.println("");
+        System.out.println("0 - NO, 1 - YES");
+        System.out.println("2 - READ, 3 - WRITE, 4 - FIND");
+        System.out.println("5 - ADD, 6 - SHOW, 7 - CHOOSE");
+        System.out.println("8 - DELETE, 9 - QUIT");
         makeChoice();
     }
 

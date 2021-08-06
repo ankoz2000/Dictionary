@@ -31,9 +31,7 @@ public class file {
         }
     }
 
-    private void closeFile() {
-        pw.close();
-    }
+    private void closeFile() { pw.close(); }
 
     public void writeToFile(String str) {
         openFile();
