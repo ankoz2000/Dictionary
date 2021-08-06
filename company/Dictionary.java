@@ -59,8 +59,10 @@ class Dict implements Dictionary {
             System.out.println("Error! Your string doesn't match dictionary conditions.");
             return false;
         }
-        f.writeToFile(note);
-        return true;
+        if(f.getState()) {
+            f.writeToFile(note);
+            return true;
+        } else return false;
     }
     public int getWordCondition() {
         return wordLenCondition;

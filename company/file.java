@@ -11,12 +11,14 @@ public class file {
     private PrintWriter pw;
     private FileReader rd;
     private boolean isOpen = false;
+    static File folder = new File("./");
 
     file() { filepath = "default.txt"; }
 
     file(String filepath) {
         setFilePath(filepath);
         openFile();
+        setStateOpened();
     }
 
     public void setFilePath(String filepath) { this.filepath = filepath; } // private?
@@ -69,6 +71,26 @@ public class file {
         } catch (IOException exception) {
             System.out.println("Readable file cannot be closed");
         }
+    }
+
+    public boolean getState() {
+        return isOpen;
+    }
+
+    private void setStateOpened() {
+        isOpen = true;
+    }
+
+    static public void showAllFiles() {
+        for(File fileEntry : folder.listFiles()) {
+            if(fileEntry.isFile()) {
+                System.out.println(fileEntry.getName());
+            }
+        }
+    }
+
+    private String getFileExtension() {
+        return "";
     }
 
 

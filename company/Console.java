@@ -5,10 +5,7 @@ import java.util.regex.Pattern;
 
 // Пока делаю ключ-значения интовые, позже переделаю на String
 
-public class Console extends Dict{
-    private int key;
-    private int value;
-    file openedFile;
+public class Console {
     private int option;
     private String line;
     final private Scanner in = new Scanner(System.in);
@@ -20,15 +17,13 @@ public class Console extends Dict{
     private boolean inputInt() {
         Scanner in = new Scanner(System.in);
         System.out.print(">> ");
-        do {
-            try {
-                if(in.hasNextInt()) // проверки корректности выбора значений меню
-                    option = in.nextInt();
-                else return false;
-            } catch (InputMismatchException exception) {
-                System.out.println("Incorrect symbols. Try again!");
-            }
-        } while (isNotCorrect());
+        try {
+            if(in.hasNextInt()) // проверки корректности выбора значений меню
+                option = in.nextInt();
+            else return false;
+        } catch (InputMismatchException exception) {
+            System.out.println("Incorrect symbols. Try again!");
+        }
         return true;
     }
 
@@ -63,7 +58,7 @@ public class Console extends Dict{
         decider();
     }
 
-    private boolean isNotCorrect() { return (option < minAnswer || option > maxAnswer); }
+    //private boolean isNotCorrect() { return (option < minAnswer || option > maxAnswer); }
     private boolean isYesOrNo() { return Pattern.matches("[ynдн]?", line); }
     //private boolean isNameOfFileCorrect() { return Pattern.matches("[a-zA-Z]\\.txt", line); }
 
@@ -99,49 +94,65 @@ public class Console extends Dict{
     }
 
     private void decider() {
-        switch (Options.values()[option]) {
-            case CREATE: {
-                createDict();
-                break;
-            }
-            case OPEN: {
-                break;
-            }
-            case READ: {
-                System.out.println("you would like open an existing dictionary. Please input it's own path.");
-                System.out.println(">> ");
+        try {
+            switch (Options.values()[option]) {
+                case CREATE: {
+                    createDict();
+                    break;
+                }
+                case OPEN: {
+                    System.out.println("What file do you want to open?");
+                    file.showAllFiles();
+                    break;
+                }
+                case READ: {
+                    System.out.println("you would like open an existing dictionary. Please input it's own path.");
+                    System.out.println(">> ");
 
-                break;
+                    break;
+                }
+                case WRITE: {
+                    System.out.println("Input string you want to add");
+                    break;
+                }
+                case FIND: {
+                    break;
+                }
+                case ADD: {
+                    if (dict == null) {
+                        System.out.println("");
+                        System.out.println("Firstly choose an existing file or create new.");
+                        System.out.println("");
+                    } else {
+                        System.out.println("Input string you want to add:");
+                        if (inputStr())
+                            if (dict.add(line))
+                                System.out.println("Firstly choose an existing file or create new.");
+                    }
+                    break;
+                }
+                case SHOW: {
+                    break;
+                }
+                case CHOOSE: {
+                    break;
+                }
+                case DELETE: {
+                    break;
+                }
+                case QUIT: {
+                    System.out.println("Exit...");
+                    System.exit(0);
+                }
+                default: {
+                    /* Default process */
+                    break;
+                }
             }
-            case WRITE: {
-                System.out.println("Input string you want to add");
-                break;
-            }
-            case FIND: {
-                break;
-            }
-            case ADD: {
-                if (inputStr())
-                    dict.add(line);
-                break;
-            }
-            case SHOW: {
-                break;
-            }
-            case CHOOSE: {
-                break;
-            }
-            case DELETE: {
-                break;
-            }
-            case QUIT: {
-                System.out.println("Exit...");
-                System.exit(0);
-            }
-            default: {
-                /* Default process */
-                break;
-            }
+        } catch (ArrayIndexOutOfBoundsException ofbException) {
+            System.out.println("");
+            System.out.println("There are no function with this number. Try another number");
+            System.out.println("");
         }
     }
 
