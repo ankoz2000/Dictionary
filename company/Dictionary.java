@@ -1,22 +1,29 @@
 package com.company;
 
+import java.util.regex.Pattern;
+
 public interface Dictionary {
-    int dict1condition = 4;
-    int dict2condition = 5;
-    default public boolean check(String str) {
+    default boolean check(String str, int wordLength) {
         int len = str.length();
-        if(len != dict1condition && len != dict2condition) {
-            return false;
-        }
-        return true;
-    }; // default private ?
+        String regexp = String.format("[a-zA-Z]{%d}", wordLength);
+        return Pattern.matches(regexp, str);
+    }
     void showContent();
     void delete(int key);
     void find(int key);
     void add(String note);
+    int getWordCondition();
 }
 
 class Dict implements Dictionary {
+    int wordLenCondition; // 4 - Значение по умолчанию
+    Dict() {
+        wordLenCondition = 4;
+    }
+    Dict(int wordLenCond) {
+        wordLenCondition = wordLenCond;
+    }
+    /* Dict(int wordLenCond, String str) Конструктор с начальной записью? */
     public void showContent() {
 
     }
@@ -27,7 +34,12 @@ class Dict implements Dictionary {
 
     }
     public void add(String note) {
-
+        if(!check(note, getWordCondition())) {
+            System.out.println("Error! Your string doesn't match dictionary conditions.");
+        }
+    }
+    public int getWordCondition() {
+        return wordLenCondition;
     }
 }
 

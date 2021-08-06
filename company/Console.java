@@ -5,14 +5,14 @@ import java.util.Scanner;
 
 // Пока делаю ключ-значения интовые, позже переделаю на String
 
-public class Console extends Options{
+public class Console{
     private int key;
     private int value;
     private String filePath;
     private int option;
     final private int maxAnswer = 9;
     final private int minAnswer = 0;
-    Option op;
+    Options op;
 
     private boolean intInput() {
         Scanner in = new Scanner(System.in);
@@ -44,7 +44,7 @@ public class Console extends Options{
     }
 
     private void decider() {
-        switch (Option.values()[option]) {
+        switch (Options.values()[option]) {
             case NO: {
                 break;
             }
