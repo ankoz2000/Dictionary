@@ -81,16 +81,45 @@ public class file {
         isOpen = true;
     }
 
-    static public void showAllFiles() {
+    static public void showAllFiles() { // Переписать. Файл не знает что мы работаем с консолью
         for(File fileEntry : folder.listFiles()) {
-            if(fileEntry.isFile()) {
+            int i = 0;
+            if(fileEntry.isFile() && (getFileExtension(fileEntry).equals("txt"))) {
+                System.out.print(++i + ". ");
                 System.out.println(fileEntry.getName());
             }
         }
     }
 
-    private String getFileExtension() {
-        return "";
+    static public String[] getAllFilesAsBuffer() {
+        String[] buff = new String[countQuantityOfTXT()];
+        int i = 0;
+        for(File fileEntry : folder.listFiles()) {
+            if(isTXT(fileEntry)) {
+                String nameOfFile = fileEntry.getName();
+                buff[i] = nameOfFile;
+                i += 1;
+            }
+        }
+        return buff;
+    }
+
+    static boolean isTXT(File fileEntry) {
+        return fileEntry.isFile() && (getFileExtension(fileEntry).equals("txt"));
+    }
+
+    static int countQuantityOfTXT() {
+        int quantityOfFiles = 0;
+        for(File fileEntry : folder.listFiles())
+            ++quantityOfFiles;
+        return  quantityOfFiles;
+    }
+
+    static String getFileExtension(File file) {
+        String fileName = file.getName();
+        if(fileName.lastIndexOf(".") != -1 && fileName.lastIndexOf(".") != 0)
+            return fileName.substring(fileName.lastIndexOf(".") + 1); // Вырезать все знаки после точки
+        else return "";
     }
 
 

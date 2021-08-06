@@ -8,10 +8,6 @@ import java.util.regex.Pattern;
 public class Console {
     private int option;
     private String line;
-    final private Scanner in = new Scanner(System.in);
-    final private int maxAnswer = 9;
-    final private int minAnswer = 0;
-    Options op;
     private Dict dict;
 
     private boolean inputInt() {
@@ -83,6 +79,16 @@ public class Console {
         }
     }
 
+    private void openDict(int num) {
+        System.out.println("What dictionary do you want to open?");
+        Dictionary.getAllAvailableDictionaries();
+        System.out.println("Input a number of file:");
+        inputInt();
+        String[] dicts = Dictionary.getAllAvailableDictionaries();
+        dict = new Dict(dicts[num - 1]); // Смещение на 1 (индексация массива)
+        // Как узнать, какая спецификация словаря?
+    }
+
     private void getYesOrNo() {
         System.out.println("Do you agree? (y/n)(д/н): ");
         while(!inputStr()) {
@@ -101,8 +107,7 @@ public class Console {
                     break;
                 }
                 case OPEN: {
-                    System.out.println("What file do you want to open?");
-                    file.showAllFiles();
+                    openDict(option);
                     break;
                 }
                 case READ: {

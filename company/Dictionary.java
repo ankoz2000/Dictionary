@@ -1,13 +1,15 @@
 package com.company;
 
+import java.util.function.BinaryOperator;
 import java.util.regex.Pattern;
 
 public interface Dictionary {
     default boolean check(String str, int wordLength) {
         int len = str.length();
-        String regexp = String.format("[a-zA-Z]{%d}", wordLength);
+        String regexp = String.format("[a-zA-Z]{%d}\s[а-я]{%d}", wordLength);
         return Pattern.matches(regexp, str);
     }
+
     void showContent();
     void delete(int key);
     void find(int key);
@@ -15,6 +17,10 @@ public interface Dictionary {
     int getWordCondition();
     static boolean isCorrectPath(String nameOfFile) {
         return Pattern.matches("^.+[a-zA-Z]\\.(txt)$", nameOfFile);
+    }
+    static String[] getAllAvailableDictionaries() {
+        file.showAllFiles();
+        return file.getAllFilesAsBuffer();
     }
 }
 
@@ -36,7 +42,6 @@ class Dict implements Dictionary {
         path = filePath;
         //isOpen = true;
         f = new file(path);
-        f.openFile();
     }
     Dict(int wordLenCond, String filePath) {
         wordLenCondition = wordLenCond;
@@ -44,7 +49,7 @@ class Dict implements Dictionary {
         f = new file(path);
         //isOpen = true;
     }
-    /* Dict(int wordLenCond, String str) Конструктор с начальной записью? */
+
     public void showContent() {
 
     }
