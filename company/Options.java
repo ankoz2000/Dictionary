@@ -1,7 +1,7 @@
 package com.company;
 
 public enum Options {
-    NO, YES, READ, WRITE,
+    CREATE, OPEN, READ, WRITE,
     FIND, ADD, SHOW, CHOOSE,
-    DELETE, QUIT;
+    DELETE, QUIT, YES, NO;
 }

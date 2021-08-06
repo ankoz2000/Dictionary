@@ -10,6 +10,7 @@ public class file {
     private String filepath;
     private PrintWriter pw;
     private FileReader rd;
+    private boolean isOpen = false;
 
     file() { filepath = "default.txt"; }
 
@@ -18,14 +19,17 @@ public class file {
         openFile();
     }
 
-    public void setFilePath(String filepath) { this.filepath = filepath; }
+    public void setFilePath(String filepath) { this.filepath = filepath; } // private?
 
     public void openFile() {
         try {
             fd = new File(filepath);
 
-            if (!fd.exists())
-                fd.createNewFile();
+            if (fd.createNewFile()) {
+                System.out.println("File created successfully!");
+            } else {
+                System.out.println("The named file already exists");
+            }
         } catch (IOException exception) {
             System.out.println("Error while opening/creating file: " + exception);
         }
@@ -60,6 +64,11 @@ public class file {
                 System.out.println("End of file reached: " + exception);
             }
             System.out.println(); // Нужна проверка на возвращаемый NULL
+        try{
+            br.close();
+        } catch (IOException exception) {
+            System.out.println("Readable file cannot be closed");
+        }
     }
 
 

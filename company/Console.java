@@ -1,66 +1,128 @@
 package com.company;
+import java.util.InputMismatchException;
 import java.util.Scanner;
-
-
+import java.util.regex.Pattern;
 
 // Пока делаю ключ-значения интовые, позже переделаю на String
 
-public class Console{
+public class Console extends Dict{
     private int key;
     private int value;
-    private String filePath;
+    file openedFile;
     private int option;
+    private String line;
+    final private Scanner in = new Scanner(System.in);
     final private int maxAnswer = 9;
     final private int minAnswer = 0;
     Options op;
+    private Dict dict;
 
-    private boolean intInput() {
+    private boolean inputInt() {
+        Scanner in = new Scanner(System.in);
+        System.out.print(">> ");
+        do {
+            try {
+                if(in.hasNextInt()) // проверки корректности выбора значений меню
+                    option = in.nextInt();
+                else return false;
+            } catch (InputMismatchException exception) {
+                System.out.println("Incorrect symbols. Try again!");
+            }
+        } while (isNotCorrect());
+        return true;
+    }
+
+    private boolean inputStr() {
+        Scanner in = new Scanner(System.in);
+        System.out.print(">> ");
+        try {
+            line = in.nextLine();
+        } catch (InputMismatchException exception) {
+            System.out.println("Incorrect symbols. Try again!");
+        }
+        return true;
+    }
+
+    private boolean inputYesOrNo() {
         Scanner in = new Scanner(System.in);
         do {
-            option = in.nextInt(); // проверки корректности выбора значений меню
-            if (isNotCorrect())
-                return false;
-        } while (isNotCorrect());
+            try {
+                line = in.nextLine();
+            } catch (InputMismatchException exception) {
+                System.out.println("Incorrect symbols. Try again!");
+            }
+        } while (isYesOrNo());
         return true;
     }
 
     private void makeChoice() {
         System.out.println("Input a number: ");
-        System.out.print(">> ");
-        while(!intInput()) {
+        while(!inputInt()) {
             System.out.println("Incorrect choice. Try again.");
         }
         decider();
     }
 
     private boolean isNotCorrect() { return (option < minAnswer || option > maxAnswer); }
+    private boolean isYesOrNo() { return Pattern.matches("[ynдн]?", line); }
+    //private boolean isNameOfFileCorrect() { return Pattern.matches("[a-zA-Z]\\.txt", line); }
+
+    private void createDict() {
+        System.out.println("Write your diction file path or name of file: ");
+        inputStr();
+        if(Dictionary.isCorrectPath(line)) {
+            String path = line;
+            System.out.println("Would you like to specify word length? " +
+                    "If no, default word length will be 4.");
+            getYesOrNo();
+            if(Options.values()[option] == Options.NO)
+                dict = new Dict(line);
+            else {
+                System.out.println("Word length:");
+                inputInt();
+                int wordLength = option;
+                dict = new Dict(wordLength, path);
+            }
+        } else {
+            System.out.println("Could not to create dictionary.");
+        }
+    }
 
     private void getYesOrNo() {
-        Scanner in = new Scanner(System.in);
-        System.out.println("Do you agree? 1 - Yes, 0 - No: ");
-        while(!intInput()) {
+        System.out.println("Do you agree? (y/n)(д/н): ");
+        while(!inputStr()) {
             System.out.println("Incorrect choice. Try again.");
         }
+        if(Pattern.matches("[yд]?", line))
+            option = 10;
+        else if (Pattern.matches("[nн]?", line)) option = 11;
     }
 
     private void decider() {
         switch (Options.values()[option]) {
-            case NO: {
+            case CREATE: {
+                createDict();
                 break;
             }
-            case YES: {
+            case OPEN: {
                 break;
             }
             case READ: {
+                System.out.println("you would like open an existing dictionary. Please input it's own path.");
+                System.out.println(">> ");
+
                 break;
             }
             case WRITE: {
+                System.out.println("Input string you want to add");
                 break;
             }
             case FIND: {
                 break;
             }
             case ADD: {
+                if (inputStr())
+                    dict.add(line);
                 break;
             }
             case SHOW: {
@@ -86,7 +148,7 @@ public class Console{
 
     private void showMenu() {
         System.out.println("MENU:");
-        System.out.println("0 - NO, 1 - YES");
+        System.out.println("0 - CREATE NEW DICTIONARY, 1 - OPEN EXISTING DICTIONARY");
         System.out.println("2 - READ, 3 - WRITE, 4 - FIND");
         System.out.println("5 - ADD, 6 - SHOW, 7 - CHOOSE");
         System.out.println("8 - DELETE, 9 - QUIT");
@@ -95,9 +157,9 @@ public class Console{
 
     public static void main(String[] args) {
         Console c = new Console();
-        //while(true) {
+        while(true) {
             c.showMenu();
-        //}
+        }
     }
 
 }
