@@ -16,6 +16,7 @@ public interface Dictionary {
     boolean add(String note);
     int getWordCondition();
     int getQuantityOfLines();
+    String usedNow();
 
     static boolean isCorrectPath(String nameOfFile) {
         return Pattern.matches("^.+[a-zA-Z]\\.(txt)$", nameOfFile);
@@ -74,8 +75,7 @@ class Dict implements Dictionary {
     @Override
     public StringBuffer find(String key) {
         ///check() проверка корректности ключа?
-        StringBuffer result = f.find(key);
-        return result;
+        return f.find(key);
     }
     @Override
     public boolean add(String note) {
@@ -91,6 +91,10 @@ class Dict implements Dictionary {
     @Override
     public int getWordCondition() {
         return wordLenCondition;
+    }
+    @Override
+    public String usedNow() {
+        return f.getFileName();
     }
 }
 

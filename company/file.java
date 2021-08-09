@@ -1,10 +1,6 @@
 package com.company;
 import javax.imageio.IIOException;
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.IOException;
-import java.io.PrintWriter;
-import java.io.FileReader;
+import java.io.*;
 import java.util.regex.Pattern;
 
 public class file {
@@ -128,9 +124,35 @@ public class file {
         return result;
     }
 
+    public void delete(String key) {
+        File outputFile = new File("Dist.txt");
+        BufferedReader br = null;
+        try {
+            rd = new FileReader(filepath);
+            br = new BufferedReader(rd);
+            PrintWriter pw = new PrintWriter(outputFile);
+        } catch (FileNotFoundException FNFE) {
+            System.out.println("Error with delete(): " + FNFE);
+        }
+        String line;
+        try {
+            while ((line = br.readLine()) != null) {
+                if (!line.split(" ")[0].equals(key)) {
+                    pw.write(line);
+                }
+            }
+            br.close();
+        } catch (IOException IOE) {
+            System.out.println("Error with delete(): " + IOE);
+        }
+        pw.close();
+        fd.delete();
+        outputFile.renameTo(new File(fd.getName()));
+    }
+
     static public void showAllFiles() { // Переписать. Файл не знает что мы работаем с консолью???
+        int i = 0;
         for(File fileEntry : folder.listFiles()) {
-            int i = 0;
             if(fileEntry.isFile() && (getFileExtension(fileEntry).equals("txt"))) {
                 System.out.print(++i + ". ");
                 System.out.println(fileEntry.getName());
@@ -188,4 +210,5 @@ public class file {
         }
         return linesCount;
     }
+    public String getFileName() { return fd.getName(); }
 }

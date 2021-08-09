@@ -81,10 +81,9 @@ public class Console {
 
     private void openDict(int num) {
         System.out.println("What dictionary do you want to open?");
-        Dictionary.getAllAvailableDictionaries();
+        String[] dicts = Dictionary.getAllAvailableDictionaries();
         System.out.println("Input a number of file:");
         inputInt();
-        String[] dicts = Dictionary.getAllAvailableDictionaries();
         dict = new Dict(dicts[num - 1]); // Смещение на 1 (индексация массива)
         // Как узнать, какая спецификация словаря?
     }
@@ -135,6 +134,9 @@ public class Console {
         inputStr();
         dict.delete(line);
     }
+    private void dictUsedNow() {
+        System.out.println(dict.usedNow());
+    }
 
     private void getYesOrNo() {
         System.out.println("Do you agree? (y/n)(д/н): ");
@@ -182,7 +184,9 @@ public class Console {
                     showAllLines();
                     break;
                 }
-                case CHOOSE: {
+                case CHOOSED: {
+                    if (dict == null) throw new NullPointerException();
+                    dictUsedNow();
                     break;
                 }
                 case DELETE: {
