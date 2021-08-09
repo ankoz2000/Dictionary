@@ -16,7 +16,7 @@ public class Console {
                 option = in.nextInt();
             else return false;
         } catch (InputMismatchException exception) {
-            System.out.println("Incorrect symbols. Try again!");
+            System.out.println("Incorrect number. Check range of nums you're allowed to use.");
         }
         return true;
     }
@@ -32,29 +32,13 @@ public class Console {
         return true;
     }
 
-    private boolean inputYesOrNo() {
-        Scanner in = new Scanner(System.in);
-        do {
-            try {
-                line = in.nextLine();
-            } catch (InputMismatchException exception) {
-                System.out.println("Incorrect symbols. Try again!");
-            }
-        } while (isYesOrNo());
-        return true;
-    }
-
     private void makeChoice() {
         System.out.println("Input a number: ");
         while(!inputInt()) {
-            System.out.println("Incorrect choice. Try again.");
+            System.out.println("Incorrect choice. Options may be in range [0, 9]. Try again.");
         }
         decider();
     }
-
-    //private boolean isNotCorrect() { return (option < minAnswer || option > maxAnswer); }
-    private boolean isYesOrNo() { return Pattern.matches("[ynдн]?", line); }
-    //private boolean isNameOfFileCorrect() { return Pattern.matches("[a-zA-Z]\\.txt", line); }
 
     private void createDict() {
         System.out.println("Write your diction file path or name of file: ");
@@ -73,7 +57,8 @@ public class Console {
                 dict = new Dict(wordLength, path);
             }
         } else {
-            System.out.println("Could not to create dictionary.");
+            System.out.println("Could not to create dictionary. Check symbols in name of file.");
+            System.out.println("Example: default.txt (nums aren't allowed)");
         }
     }
 
@@ -113,8 +98,7 @@ public class Console {
         } else {
             System.out.println("Input string you want to add:");
             if (inputStr())
-                if (dict.add(line))
-                    System.out.println("Firstly choose an existing file or create new.");
+                dict.add(line);
         }
     }
 
@@ -142,8 +126,8 @@ public class Console {
             System.out.println("Incorrect choice. Try again.");
         }
         if(Pattern.matches("[yд]?", line))
-            option = 10;
-        else if (Pattern.matches("[nн]?", line)) option = 11;
+            option = Options.YES.ordinal();
+        else if (Pattern.matches("[nн]?", line)) option = Options.NO.ordinal();
     }
 
     private void decider() {
@@ -162,19 +146,14 @@ public class Console {
                     readFromDict();
                     break;
                 }
-                case WRITE: {
+                case ADD: {
                     if (dict == null) throw new NullPointerException();
-                    writeToDict();
+                    add();
                     break;
                 }
                 case FIND: {
                     if (dict == null) throw new NullPointerException();
                     find();
-                    break;
-                }
-                case ADD: {
-                    if (dict == null) throw new NullPointerException();
-                    add();
                     break;
                 }
                 case SHOW_ALL: {
@@ -212,9 +191,9 @@ public class Console {
     private void showMenu() {
         System.out.println("MENU:");
         System.out.println("0 - CREATE NEW DICTIONARY, 1 - OPEN EXISTING DICTIONARY");
-        System.out.println("2 - READ, 3 - WRITE, 4 - FIND");
-        System.out.println("5 - ADD, 6 - SHOW, 7 - CHOOSE");
-        System.out.println("8 - DELETE, 9 - QUIT");
+        System.out.println("2 - READ, 3 - ADD, 4 - FIND");
+        System.out.println("5 - SHOW, 6 - CHOOSE, 7 - DELETE");
+        System.out.println("8 - QUIT");
         try {
             makeChoice();
         } catch (NullPointerException e) {

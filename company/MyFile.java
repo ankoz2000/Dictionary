@@ -1,19 +1,17 @@
 package com.company;
-import javax.imageio.IIOException;
 import java.io.*;
-import java.util.regex.Pattern;
 
-public class file {
+public class MyFile {
     private File fd;
     private String filepath;
     private PrintWriter pw;
     private FileReader rd;
     private boolean isOpen = false;
-    static File folder = new File("./");
 
-    file() { filepath = "default.txt"; }
 
-    file(String filepath) {
+    MyFile() { filepath = "default.txt"; }
+
+    MyFile(String filepath) {
         setFilePath(filepath);
         openFile();
         setStateOpened();
@@ -49,17 +47,6 @@ public class file {
         } catch (IOException exception) {
             System.out.println("Error while opening/creating file: " + exception);
         }
-    }
-
-    public void writeToFile(String str) {
-        openFile();
-        try {
-            pw = new PrintWriter(fd);
-        } catch (IOException exception) {
-            System.out.println("Error while writing to file: " + exception);
-        }
-        pw.println(str);
-        closeFile();
     }
 
     public void addToFile(String str) {
@@ -165,47 +152,6 @@ public class file {
         pw.close();
         fd.delete();
         outputFile.renameTo(new File(fd.getName()));
-    }
-
-    static public void showAllFiles() { // Переписать. Файл не знает что мы работаем с консолью???
-        int i = 0;
-        for(File fileEntry : folder.listFiles()) {
-            if(fileEntry.isFile() && (getFileExtension(fileEntry).equals("txt"))) {
-                System.out.print(++i + ". ");
-                System.out.println(fileEntry.getName());
-            }
-        }
-    }
-
-    static public String[] getAllFilesAsBuffer() {
-        String[] buff = new String[countQuantityOfTXT()];
-        int i = 0;
-        for(File fileEntry : folder.listFiles()) {
-            if(isTXT(fileEntry)) {
-                String nameOfFile = fileEntry.getName();
-                buff[i] = nameOfFile;
-                i += 1;
-            }
-        }
-        return buff;
-    }
-
-    static boolean isTXT(File fileEntry) {
-        return fileEntry.isFile() && (getFileExtension(fileEntry).equals("txt"));
-    }
-
-    static int countQuantityOfTXT() {
-        int quantityOfFiles = 0;
-        for(File fileEntry : folder.listFiles())
-            ++quantityOfFiles;
-        return  quantityOfFiles;
-    }
-
-    static String getFileExtension(File file) {
-        String fileName = file.getName();
-        if(fileName.lastIndexOf(".") != -1 && fileName.lastIndexOf(".") != 0)
-            return fileName.substring(fileName.lastIndexOf(".") + 1); // Вырезать все знаки после точки
-        else return "";
     }
 
     protected int getQuantityOfLines() {
