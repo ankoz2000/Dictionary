@@ -45,16 +45,15 @@ public class Console {
         inputStr();
         if(Dictionary.isCorrectPath(line)) {
             String path = line;
-            System.out.println("Would you like to specify word length? " +
-                    "If no, default word length will be 4.");
+            System.out.println("Would you like to specify regular expression for dictionary you're creating? " +
+                    "If no, default regular expression will be " + Utils.getDefaultRegExp());
             getYesOrNo();
             if(Options.values()[option] == Options.NO)
                 dict = new Dict(line);
             else {
-                System.out.println("Word length:");
-                inputInt();
-                int wordLength = option;
-                dict = new Dict(wordLength, path);
+                System.out.println("Regular expression: ");
+                inputStr();
+                dict = new Dict(line, path);
             }
         } else {
             System.out.println("Could not to create dictionary. Check symbols in name of file.");
@@ -68,13 +67,7 @@ public class Console {
         System.out.println("Input a number of file:");
         inputInt();
         dict = new Dict(dicts[option - 1]); // Смещение на 1 (индексация массива)
-        // Как узнать, какая спецификация словаря?
-    }
-
-    private void writeToDict() {
-        System.out.println("Input string you want to add");
-        inputStr();
-        dict.add(line);
+        System.out.println("Спецификация словаря: " + dict.getRegExp());
     }
 
     private void showAllLines() {

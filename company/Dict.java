@@ -1,16 +1,10 @@
 package com.company;
 
 class Dict implements Dictionary {
-    private int wordLenCondition = 4; // 4 - Значение по умолчанию
     private String path = "default.txt";
     private MyFile f;
     Dict() {
         f = new MyFile(path);
-    }
-
-    Dict(int wordLenCond) {
-        wordLenCondition = wordLenCond;
-        f = new MyFile();
     }
 
     Dict(String filePath) {
@@ -18,10 +12,9 @@ class Dict implements Dictionary {
         f = new MyFile(path);
     }
 
-    Dict(int wordLenCond, String filePath) {
-        wordLenCondition = wordLenCond;
+    Dict(String regExp, String filePath) {
         path = filePath;
-        f = new MyFile(path);
+        f = new MyFile(path, regExp);
     }
 
     @Override
@@ -34,7 +27,7 @@ class Dict implements Dictionary {
 
     @Override
     public String add(String note) {
-        if(!check(note, getWordCondition())) {
+        if(!check(note, getRegExp())) {
             return "Error! Your string doesn't match dictionary conditions.";
         }
         if(f.getState()) {
@@ -60,11 +53,6 @@ class Dict implements Dictionary {
     }
 
     @Override
-    public int getWordCondition() {
-        return wordLenCondition;
-    }
-
-    @Override
     public int getQuantityOfLines() {
         return f.getQuantityOfLines();
     }
@@ -72,5 +60,10 @@ class Dict implements Dictionary {
     @Override
     public String usedNow() {
         return f.getFileName();
+    }
+
+    @Override
+    public String getRegExp() {
+        return f.getRegExp();
     }
 }

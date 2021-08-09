@@ -4,6 +4,7 @@ import java.io.*;
 public class MyFile {
     private File fd;
     private String filepath;
+    private String configString; // example: $cfg::regExp1::regExp2\n
     private PrintWriter pw;
     private FileReader rd;
     private boolean isOpen = false;
@@ -13,6 +14,18 @@ public class MyFile {
 
     MyFile(String filepath) {
         setFilePath(filepath);
+        // Дефолтное значение длины слов - 4
+        setConfigString(String.format("$cfg::[a-zA-Z]{%d}\s[а-яА-Я]{%d}",
+                Utils.defaultWordLength,
+                Utils.defaultWordLength
+        ));
+        openFile();
+        setStateOpened();
+    }
+
+    MyFile(String filepath, String configString) {
+        setFilePath(filepath);
+        setConfigString(configString);
         openFile();
         setStateOpened();
     }
@@ -24,8 +37,13 @@ public class MyFile {
     private void setStateOpened() {
         isOpen = true;
     }
+
     private void setStateClose() {
         isOpen = false;
+    }
+
+    private void setConfigString(String configString) {
+        this.configString = configString;
     }
 
     public void setFilePath(String filepath) { this.filepath = filepath; } // private?
@@ -35,12 +53,17 @@ public class MyFile {
         pw.close();
     }
 
+    private void writeConfigString(String configString) {
+        addToFile("$cfg::" + configString + "\n");
+    }
+
     public void openFile() {
         try {
             fd = new File(filepath);
 
             if (fd.createNewFile()) {
                 System.out.println("File created successfully!");
+                writeConfigString(configString);
             } else {
                 System.out.println("Action done!");
             }
@@ -50,14 +73,12 @@ public class MyFile {
     }
 
     public void addToFile(String str) {
-        openFile();
         try {
             pw = new PrintWriter(fd);
         } catch (IOException exception) {
             System.out.println("Error while writing to file: " + exception);
         }
         pw.println(str);
-        closeFile();
     }
 
     public StringBuffer readFromFile(int s, int e) { // Сколько позиций читать?
@@ -173,5 +194,22 @@ public class MyFile {
         }
         return linesCount;
     }
+
     public String getFileName() { return fd.getName(); }
+
+    public String getRegExp() {
+        String line = "";
+        try {
+            rd = new FileReader(filepath);
+        } catch (IOException exception) {
+            System.out.println("Error while reading file: " + exception);
+        }
+        BufferedReader br = new BufferedReader(rd);
+        try {
+            line = br.readLine();
+        } catch (IOException exception) {
+            System.out.println("Error counting file lines: " + exception);
+        }
+        return line.replaceAll("^\\$cfg::", "");
+    }
 }

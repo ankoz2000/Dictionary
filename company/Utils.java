@@ -4,6 +4,14 @@ import java.io.File;
 
 public class Utils {
     static File folder = new File("./");
+    static int defaultWordLength = 4;
+
+    static public String getDefaultRegExp() {
+        return String.format("[a-zA-Z]{%d}\s[а-яА-Я]{%d}",
+                Utils.defaultWordLength,
+                Utils.defaultWordLength
+        );
+    }
 
     static public void showAllFiles() { // Переписать. Файл не знает что мы работаем с консолью???
         int i = 0;
