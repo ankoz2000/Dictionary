@@ -91,7 +91,7 @@ public class Console {
         } else {
             System.out.println("Input string you want to add:");
             if (inputStr())
-                dict.add(line);
+                System.out.println(dict.add(line));
         }
     }
 
@@ -190,7 +190,7 @@ public class Console {
         try {
             makeChoice();
         } catch (NullPointerException e) {
-            System.out.println("Firstly elect dictionary.");
+            System.out.println("Firstly elect dictionary." + e);
         }
         System.out.println("");
     }

@@ -20,20 +20,17 @@ class Dict implements Dictionary {
     @Override
     public void read(int start, int end) {
         showContent();
-        if(file.getState()) {
             file.readFromFile(start, end);
-        }
     }
 
     @Override
     public String add(String note) {
-        if(!check(note, getRegExp())) {
+        String regexp = getRegExp().replaceAll("^\\$cfg::", "");
+        if(!check(note, regexp)) {
             return "Error! Your string doesn't match dictionary conditions.";
         }
-        if(file.getState()) {
-            file.add(note);
-            return "String successfully added to file.";
-        } else return "Unhandled error...";
+        file.add(note);
+        return "String successfully added to file.";
     }
 
     @Override

@@ -5,9 +5,10 @@ import java.io.File;
 public class Utils {
     static File folder = new File("./");
     static int defaultWordLength = 4;
+    static String configStringStartWith = "^\\$cfg::";
 
     static public String getDefaultRegExp() {
-        return String.format("[a-zA-Z]{%d}\s[а-яА-Я]{%d}",
+        return String.format("[a-zA-Z]{%d}\\s[а-яА-Я]{%d}",
                 defaultWordLength,
                 defaultWordLength
         );
