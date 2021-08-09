@@ -8,8 +8,8 @@ public class Utils {
 
     static public String getDefaultRegExp() {
         return String.format("[a-zA-Z]{%d}\s[а-яА-Я]{%d}",
-                Utils.defaultWordLength,
-                Utils.defaultWordLength
+                defaultWordLength,
+                defaultWordLength
         );
     }
 
@@ -17,23 +17,23 @@ public class Utils {
         int i = 0;
         for(File fileEntry : folder.listFiles()) {
             if(fileEntry.isFile() && (getFileExtension(fileEntry).equals("txt"))) {
-                System.out.print(++i + ". ");
+                System.out.print((++i) + ". ");
                 System.out.println(fileEntry.getName());
             }
         }
     }
 
     static public String[] getAllFilesAsBuffer() {
-        String[] buff = new String[countQuantityOfTXT()];
-        int i = 0;
+        String[] outputBuffer = new String[countQuantityOfTXT()];
+        int cycleCounter = 0;
         for(File fileEntry : folder.listFiles()) {
             if(isTXT(fileEntry)) {
                 String nameOfFile = fileEntry.getName();
-                buff[i] = nameOfFile;
-                i += 1;
+                outputBuffer[cycleCounter] = nameOfFile;
+                cycleCounter += 1;
             }
         }
-        return buff;
+        return outputBuffer;
     }
 
     static boolean isTXT(File fileEntry) {
@@ -43,7 +43,8 @@ public class Utils {
     static int countQuantityOfTXT() {
         int quantityOfFiles = 0;
         for(File fileEntry : folder.listFiles())
-            ++quantityOfFiles;
+            if(isTXT(fileEntry))
+                ++quantityOfFiles;
         return  quantityOfFiles;
     }
 

@@ -2,11 +2,11 @@ package com.company;
 import java.io.*;
 
 public class MyFile {
-    private File fd;
+    private File fileDescriptor;
     private String filepath;
     private String configString; // example: $cfg::regExp1::regExp2\n
-    private PrintWriter pw;
-    private FileReader rd;
+    private PrintWriter writer;
+    private FileReader reader;
     private boolean isOpen = false;
 
 
@@ -46,22 +46,22 @@ public class MyFile {
         this.configString = configString;
     }
 
-    public void setFilePath(String filepath) { this.filepath = filepath; } // private?
+    private void setFilePath(String filepath) { this.filepath = filepath; } // private?
 
     private void closeFile() {
         setStateClose();
-        pw.close();
+        writer.close();
     }
 
     private void writeConfigString(String configString) {
-        addToFile("$cfg::" + configString + "\n");
+        add("$cfg::" + configString + "\n");
     }
 
-    public void openFile() {
+    private void openFile() {
         try {
-            fd = new File(filepath);
+            fileDescriptor = new File(filepath);
 
-            if (fd.createNewFile()) {
+            if (fileDescriptor.createNewFile()) {
                 System.out.println("File created successfully!");
                 writeConfigString(configString);
             } else {
@@ -72,122 +72,123 @@ public class MyFile {
         }
     }
 
-    public void addToFile(String str) {
+    public void add(String newString) {
         try {
-            pw = new PrintWriter(fd);
+            writer = new PrintWriter(fileDescriptor);
         } catch (IOException exception) {
             System.out.println("Error while writing to file: " + exception);
         }
-        pw.println(str);
+        writer.println(newString);
     }
 
-    public StringBuffer readFromFile(int s, int e) { // Сколько позиций читать?
+    public StringBuffer readFromFile(int start, int end) { // Сколько позиций читать?
         try {
-            rd = new FileReader(filepath);
+            reader = new FileReader(filepath);
         } catch (IOException exception) {
             System.out.println("Error while reading file: " + exception);
         }
-        BufferedReader br = new BufferedReader(rd);
-        StringBuffer buff = new StringBuffer("\nOut:\n");
+        BufferedReader bufferedReader = new BufferedReader(reader);
+        StringBuffer outputBuffer = new StringBuffer("\nOut:\n");
         /* Чтение из файла информации */
-        if (s == e) e += 1; // Если задали промежуток (3, 3) то прочтёт только 3 строку
-        for(int i = s; i < e; i++) {
+        if (start == end) end += 1; // Если задали промежуток (3, 3) то прочтёт только 3 строку
+        for(int i = start; i < end; i++) {
             try {
-                buff.append(br.readLine());
+                outputBuffer.append(bufferedReader.readLine());
             } catch (IOException exception) {
                 System.out.println("End of file reached: " + exception);
             }
         }
             System.out.println(); // Нужна проверка на возвращаемый NULL
         try{
-            br.close();
+            bufferedReader.close();
         } catch (IOException exception) {
             System.out.println("Readable file cannot be closed");
         }
-        return buff;
+        return outputBuffer;
     }
 
-    public StringBuffer readFull() {
+    public StringBuffer readFullFile() {
         try {
-            rd = new FileReader(filepath);
+            reader = new FileReader(filepath);
         } catch (IOException exception) {
             System.out.println("Error while reading file: " + exception);
         }
-        BufferedReader br = new BufferedReader(rd);
-        StringBuffer buff = new StringBuffer("\nOut:\n");
+        BufferedReader bufferedReader = new BufferedReader(reader);
+        StringBuffer outputBuffer = new StringBuffer("\nOut:\n");
         try {
-            String lines = br.readLine();
+            String lines = bufferedReader.readLine();
             while (lines != null) {
-                buff.append(lines);
-                lines = br.readLine();
+                outputBuffer.append(lines);
+                lines = bufferedReader.readLine();
             }
         } catch (IOException exception) {
             System.out.println("Error while readFull(): " + exception);
         }
-        return buff;
+        return outputBuffer;
     }
 
     protected StringBuffer find(String key) {
-        StringBuffer result = new StringBuffer("Out: ");
+        StringBuffer outputBuffer = new StringBuffer("Out: ");
         try {
-            rd = new FileReader(filepath);
+            reader = new FileReader(filepath);
         } catch (IOException exception) {
             System.out.println("Error while reading file: " + exception);
         }
-        BufferedReader br = new BufferedReader(rd);
+        BufferedReader bufferedReader = new BufferedReader(reader);
         try {
-            String line = br.readLine();
+            String line = bufferedReader.readLine();
             while (line != null) {
 
                 if (line.split(" ")[0].equals(key))
-                    result.append(line);
-                line = br.readLine();
+                    outputBuffer.append(line);
+                line = bufferedReader.readLine();
             }
         } catch (IOException exception) {
             System.out.println("Error while find(): " + exception);
         }
-        return result;
+        return outputBuffer;
     }
 
-    public void delete(String key) {
+    protected void deleteString(String key) {
         File outputFile = new File("Dist.txt");
-        BufferedReader br = null;
+        BufferedReader bufferedReader = null;
         try {
-            rd = new FileReader(filepath);
-            br = new BufferedReader(rd);
+            reader = new FileReader(filepath);
+            bufferedReader = new BufferedReader(reader);
             PrintWriter pw = new PrintWriter(outputFile);
         } catch (FileNotFoundException FNFE) {
             System.out.println("Error with delete(): " + FNFE);
         }
         String line;
         try {
-            while ((line = br.readLine()) != null) {
+            while ((line = bufferedReader.readLine()) != null) {
                 if (!line.split(" ")[0].equals(key)) {
-                    pw.write(line);
+                    writer.write(line);
                 }
             }
-            br.close();
+            bufferedReader.close();
         } catch (IOException IOE) {
             System.out.println("Error with delete(): " + IOE);
+            writer.close();
+            String nameOfFile = fileDescriptor.getName();
+            fileDescriptor.delete();
+            outputFile.renameTo(new File(nameOfFile));
         }
-        pw.close();
-        fd.delete();
-        outputFile.renameTo(new File(fd.getName()));
     }
 
     protected int getQuantityOfLines() {
         try {
-            rd = new FileReader(filepath);
+            reader = new FileReader(filepath);
         } catch (IOException exception) {
             System.out.println("Error while reading file: " + exception);
         }
-        BufferedReader br = new BufferedReader(rd);
+        BufferedReader bufferedReader = new BufferedReader(reader);
         int linesCount = 0;
         try {
-            String line = br.readLine();
+            String line = bufferedReader.readLine();
             while (line != null) {
                 linesCount += 1;
-                line = br.readLine();
+                line = bufferedReader.readLine();
             }
         } catch (IOException exception) {
             System.out.println("Error counting file lines: " + exception);
@@ -195,18 +196,18 @@ public class MyFile {
         return linesCount;
     }
 
-    public String getFileName() { return fd.getName(); }
+    protected String getFileName() { return fileDescriptor.getName(); }
 
-    public String getRegExp() {
+    protected String getRegExp() {
         String line = "";
         try {
-            rd = new FileReader(filepath);
+            reader = new FileReader(filepath);
         } catch (IOException exception) {
             System.out.println("Error while reading file: " + exception);
         }
-        BufferedReader br = new BufferedReader(rd);
+        BufferedReader bufferedReader = new BufferedReader(reader);
         try {
-            line = br.readLine();
+            line = bufferedReader.readLine();
         } catch (IOException exception) {
             System.out.println("Error counting file lines: " + exception);
         }

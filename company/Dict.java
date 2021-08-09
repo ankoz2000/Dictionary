@@ -2,26 +2,26 @@ package com.company;
 
 class Dict implements Dictionary {
     private String path = "default.txt";
-    private MyFile f;
+    private MyFile file;
     Dict() {
-        f = new MyFile(path);
+        file = new MyFile(path);
     }
 
     Dict(String filePath) {
         path = filePath;
-        f = new MyFile(path);
+        file = new MyFile(path);
     }
 
     Dict(String regExp, String filePath) {
         path = filePath;
-        f = new MyFile(path, regExp);
+        file = new MyFile(path, regExp);
     }
 
     @Override
     public void read(int start, int end) {
         showContent();
-        if(f.getState()) {
-            f.readFromFile(start, end);
+        if(file.getState()) {
+            file.readFromFile(start, end);
         }
     }
 
@@ -30,40 +30,40 @@ class Dict implements Dictionary {
         if(!check(note, getRegExp())) {
             return "Error! Your string doesn't match dictionary conditions.";
         }
-        if(f.getState()) {
-            f.addToFile(note);
+        if(file.getState()) {
+            file.add(note);
             return "String successfully added to file.";
         } else return "Unhandled error...";
     }
 
     @Override
     public void delete(String key) {
-        f.delete(key);
+        file.deleteString(key);
     }
 
     @Override
     public StringBuffer find(String key) {
         ///check() проверка корректности ключа?
-        return f.find(key);
+        return file.find(key);
     }
 
     @Override
     public StringBuffer showContent() {
-        return f.readFull();
+        return file.readFullFile();
     }
 
     @Override
     public int getQuantityOfLines() {
-        return f.getQuantityOfLines();
+        return file.getQuantityOfLines();
     }
 
     @Override
     public String usedNow() {
-        return f.getFileName();
+        return file.getFileName();
     }
 
     @Override
     public String getRegExp() {
-        return f.getRegExp();
+        return file.getRegExp();
     }
 }
