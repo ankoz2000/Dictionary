@@ -5,16 +5,18 @@ import java.util.regex.Pattern;
 
 public interface Dictionary {
     default boolean check(String str, int wordLength) {
-        int len = str.length();
-        String regexp = String.format("[a-zA-Z]{%d}\s[а-я]{%d}", wordLength);
+        String regexp = String.format("[a-zA-Z]{%d}\s[а-яА-Я]{%d}", wordLength, wordLength);
         return Pattern.matches(regexp, str);
     }
 
-    void showContent();
-    void delete(int key);
-    void find(int key);
+    void read(int start, int end);
+    void delete(String key);
+    StringBuffer find(String key);
+    StringBuffer showContent();
     boolean add(String note);
     int getWordCondition();
+    int getQuantityOfLines();
+
     static boolean isCorrectPath(String nameOfFile) {
         return Pattern.matches("^.+[a-zA-Z]\\.(txt)$", nameOfFile);
     }
@@ -50,15 +52,32 @@ class Dict implements Dictionary {
         //isOpen = true;
     }
 
-    public void showContent() {
+    @Override
+    public void read(int start, int end) {
+        showContent();
+        if(f.getState()) {
+            f.readFromFile(start, end);
+        }
+    }
+    @Override
+    public StringBuffer showContent() {
+        return f.readFull();
+    }
+    @Override
+    public int getQuantityOfLines() {
+        return f.getQuantityOfLines();
+    }
+    @Override
+    public void delete(String key) {
 
     }
-    public void delete(int key) {
-
+    @Override
+    public StringBuffer find(String key) {
+        ///check() проверка корректности ключа?
+        StringBuffer result = f.find(key);
+        return result;
     }
-    public void find(int key) {
-
-    }
+    @Override
     public boolean add(String note) {
         if(!check(note, getWordCondition())) {
             System.out.println("Error! Your string doesn't match dictionary conditions.");
@@ -69,6 +88,7 @@ class Dict implements Dictionary {
             return true;
         } else return false;
     }
+    @Override
     public int getWordCondition() {
         return wordLenCondition;
     }

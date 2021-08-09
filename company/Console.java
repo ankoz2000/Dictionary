@@ -89,6 +89,53 @@ public class Console {
         // Как узнать, какая спецификация словаря?
     }
 
+    private void writeToDict() {
+        System.out.println("Input string you want to add");
+        inputStr();
+        dict.add(line);
+    }
+
+    private void showAllLines() {
+        int linesCount = dict.getQuantityOfLines();
+        System.out.println("");
+        System.out.println("Quantity of lines: " + linesCount);
+        StringBuffer content = dict.showContent();
+        System.out.println(content);
+    }
+
+    private void readFromDict() {
+        showAllLines();
+        /* Выборка диапазонов чтения */
+    }
+
+    private void add() {
+        if (dict == null) {
+            System.out.println("");
+            System.out.println("Firstly choose an existing file or create new.");
+            System.out.println("");
+        } else {
+            System.out.println("Input string you want to add:");
+            if (inputStr())
+                if (dict.add(line))
+                    System.out.println("Firstly choose an existing file or create new.");
+        }
+    }
+
+    private void find() {
+        System.out.println("Input key to find note: ");
+        inputStr();
+        StringBuffer result = dict.find(line);
+        System.out.println("");
+        System.out.println(result);
+        System.out.println("");
+    }
+
+    private void delete() {
+        System.out.println("Input key to delete note: ");
+        inputStr();
+        dict.delete(line);
+    }
+
     private void getYesOrNo() {
         System.out.println("Do you agree? (y/n)(д/н): ");
         while(!inputStr()) {
@@ -111,38 +158,36 @@ public class Console {
                     break;
                 }
                 case READ: {
-                    System.out.println("you would like open an existing dictionary. Please input it's own path.");
-                    System.out.println(">> ");
-
+                    if (dict == null) throw new NullPointerException();
+                    readFromDict();
                     break;
                 }
                 case WRITE: {
-                    System.out.println("Input string you want to add");
+                    if (dict == null) throw new NullPointerException();
+                    writeToDict();
                     break;
                 }
                 case FIND: {
+                    if (dict == null) throw new NullPointerException();
+                    find();
                     break;
                 }
                 case ADD: {
-                    if (dict == null) {
-                        System.out.println("");
-                        System.out.println("Firstly choose an existing file or create new.");
-                        System.out.println("");
-                    } else {
-                        System.out.println("Input string you want to add:");
-                        if (inputStr())
-                            if (dict.add(line))
-                                System.out.println("Firstly choose an existing file or create new.");
-                    }
+                    if (dict == null) throw new NullPointerException();
+                    add();
                     break;
                 }
-                case SHOW: {
+                case SHOW_ALL: {
+                    if (dict == null) throw new NullPointerException();
+                    showAllLines();
                     break;
                 }
                 case CHOOSE: {
                     break;
                 }
                 case DELETE: {
+                    if (dict == null) throw new NullPointerException();
+                    delete();
                     break;
                 }
                 case QUIT: {
@@ -168,7 +213,12 @@ public class Console {
         System.out.println("2 - READ, 3 - WRITE, 4 - FIND");
         System.out.println("5 - ADD, 6 - SHOW, 7 - CHOOSE");
         System.out.println("8 - DELETE, 9 - QUIT");
-        makeChoice();
+        try {
+            makeChoice();
+        } catch (NullPointerException e) {
+            System.out.println("Firstly elect dictionary.");
+        }
+        System.out.println("");
     }
 
     public static void main(String[] args) {
