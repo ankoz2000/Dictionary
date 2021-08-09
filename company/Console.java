@@ -3,8 +3,6 @@ import java.util.InputMismatchException;
 import java.util.Scanner;
 import java.util.regex.Pattern;
 
-// Пока делаю ключ-значения интовые, позже переделаю на String
-
 public class Console {
     private int option;
     private String line;
@@ -79,12 +77,12 @@ public class Console {
         }
     }
 
-    private void openDict(int num) {
+    private void openDict() {
         System.out.println("What dictionary do you want to open?");
         String[] dicts = Dictionary.getAllAvailableDictionaries();
         System.out.println("Input a number of file:");
         inputInt();
-        dict = new Dict(dicts[num - 1]); // Смещение на 1 (индексация массива)
+        dict = new Dict(dicts[option - 1]); // Смещение на 1 (индексация массива)
         // Как узнать, какая спецификация словаря?
     }
 
@@ -156,7 +154,7 @@ public class Console {
                     break;
                 }
                 case OPEN: {
-                    openDict(option);
+                    openDict();
                     break;
                 }
                 case READ: {

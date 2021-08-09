@@ -26,10 +26,16 @@ public class file {
     private void setStateOpened() {
         isOpen = true;
     }
+    private void setStateClose() {
+        isOpen = false;
+    }
 
     public void setFilePath(String filepath) { this.filepath = filepath; } // private?
 
-    private void closeFile() { pw.close(); }
+    private void closeFile() {
+        setStateClose();
+        pw.close();
+    }
 
     public void openFile() {
         try {
@@ -46,6 +52,17 @@ public class file {
     }
 
     public void writeToFile(String str) {
+        openFile();
+        try {
+            pw = new PrintWriter(fd);
+        } catch (IOException exception) {
+            System.out.println("Error while writing to file: " + exception);
+        }
+        pw.println(str);
+        closeFile();
+    }
+
+    public void addToFile(String str) {
         openFile();
         try {
             pw = new PrintWriter(fd);
