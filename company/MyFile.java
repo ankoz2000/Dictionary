@@ -22,7 +22,7 @@ public class MyFile {
         ));
         openFile();
         String regExp = getRegExp();
-        if(regExp == null || Pattern.matches(Utils.configStringStartWith, regExp)) {
+        if(regExp == null && !Pattern.matches(Utils.configStringStartWith, regExp)) {
             String line = Utils.getDefaultRegExp();
             writeConfigString(line);
         }
@@ -185,14 +185,19 @@ public class MyFile {
         try {
             while ((line = bufferedReader.readLine()) != null) {
                 if (!line.split(" ")[0].equals(key)) {
-                    writer.write(line);
+                    String resultLine = line + "\n";
+                    writer.write(resultLine);
                 }
             }
             bufferedReader.close();
         } catch (IOException IOE) {
             System.out.println("Error with delete(): " + IOE);
         }
-        writer.close();
+        try {
+            writer.close();
+        } catch (NullPointerException nullPointerException) {
+            System.out.println("NullPonterException: " + nullPointerException);
+        }
 
         String absoluteFilePath = fileDescriptor.getAbsolutePath();
         System.out.println("file name: " + absoluteFilePath);
