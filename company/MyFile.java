@@ -1,5 +1,6 @@
 package com.company;
 import java.io.*;
+import java.util.ArrayList;
 import java.util.regex.Pattern;
 
 public class MyFile {
@@ -170,48 +171,48 @@ public class MyFile {
 
     protected void deleteString(String key) {
         /* Работает */
-        File outputFile = new File("Dist.txt");
         File sourceFile = new File(fileDescriptor.getAbsolutePath()); // Ссылочная переменная
+        ArrayList<String> stringArrayList = new ArrayList<>();
         BufferedReader bufferedReader = null;
         PrintWriter writer = null;
 
         try {
             reader = new FileReader(sourceFile);
             bufferedReader = new BufferedReader(reader);
-            writer = new PrintWriter(outputFile);
         } catch (FileNotFoundException FNFE) {
             System.out.println("Error with delete(): " + FNFE);
         }
-        String line;
         try {
+            int i = 0;
+            String line;
             while ((line = bufferedReader.readLine()) != null) {
                 if (!line.split(" ")[0].equals(key)) {
                     String resultLine = line + "\n";
-                    writer.write(resultLine);
+                    stringArrayList.add(i++, resultLine);
                 }
             }
+        } catch (IOException ioException) {
+            System.out.println("Error with delete(): " + ioException);
+        }
+        try {
             bufferedReader.close();
-        } catch (IOException IOE) {
-            System.out.println("Error with delete(): " + IOE);
+            writer = new PrintWriter(sourceFile);
+            boolean flagIfRewrite = true; // Если перезаписываем файл...
+            for (String line : stringArrayList) {
+                if (flagIfRewrite) {
+                    writer.write(line);
+                    flagIfRewrite = false;
+                }
+                else writer.append(line);
+            }
+        } catch (IOException ioException) {
+            System.out.println("Error with delete(): " + ioException);
         }
         try {
             writer.close();
         } catch (NullPointerException nullPointerException) {
             System.out.println("NullPonterException: " + nullPointerException);
         }
-
-        String absoluteFilePath = fileDescriptor.getAbsolutePath();
-        System.out.println("file name: " + absoluteFilePath);
-        /* ***** */
-        /* Не работает */
-        if(sourceFile.delete())
-            System.out.println("String successfully deleted");
-        else System.out.println("Not deleted");
-        System.out.println(absoluteFilePath);
-        if(outputFile.renameTo(sourceFile))
-            System.out.println("Successfully renamed");
-        else System.out.println("Not renamed");
-        /* ***** */
     }
 
     protected int getQuantityOfLines() {
