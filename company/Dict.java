@@ -3,28 +3,32 @@ package com.company;
 class Dict implements Dictionary {
     private String path = "default.txt";
     private MyFile file;
-    Dict() {
+    Dict() throws Exception {
         file = new MyFile(path);
     }
 
-    Dict(String filePath) {
+    Dict(String filePath) throws Exception{
         path = filePath;
         file = new MyFile(path);
     }
 
-    Dict(String regExp, String filePath) {
+    Dict(String regExp, String filePath) throws Exception{
         path = filePath;
         file = new MyFile(path, regExp);
     }
 
     @Override
-    public void read(int start, int end) {
-        showContent();
-            file.readFromFile(start, end);
+    public void delete(String key) throws Exception{
+        file.deleteString(key);
     }
 
     @Override
-    public String add(String note) {
+    public int getQuantityOfLines() throws Exception {
+        return file.getQuantityOfLines();
+    }
+
+    @Override
+    public String add(String note) throws Exception {
         String regexp = getRegExp().replaceAll("^\\$cfg::", "");
         if(!check(note, regexp)) {
             return "Error! Your string doesn't match dictionary conditions.";
@@ -34,24 +38,13 @@ class Dict implements Dictionary {
     }
 
     @Override
-    public void delete(String key) {
-        file.deleteString(key);
-    }
-
-    @Override
-    public StringBuffer find(String key) {
-        ///check() проверка корректности ключа?
+    public StringBuffer find(String key) throws Exception{
         return file.find(key);
     }
 
     @Override
-    public StringBuffer showContent() {
+    public StringBuffer showContent() throws Exception {
         return file.readFullFile();
-    }
-
-    @Override
-    public int getQuantityOfLines() {
-        return file.getQuantityOfLines();
     }
 
     @Override
@@ -60,7 +53,7 @@ class Dict implements Dictionary {
     }
 
     @Override
-    public String getRegExp() {
+    public String getRegExp() throws Exception {
         return file.getRegExp();
     }
 }

@@ -1,4 +1,5 @@
 package com.company;
+import java.util.ArrayList;
 import java.util.InputMismatchException;
 import java.util.Scanner;
 import java.util.regex.Pattern;
@@ -49,11 +50,21 @@ public class Console {
                     "If no, default regular expression will be " + Utils.getDefaultRegExp());
             getYesOrNo();
             if(Options.values()[option] == Options.NO)
-                dict = new Dict(line);
+                try {
+                    dict = new Dict(line);
+                } catch (Exception creatingException) {
+                    System.out.println("Opening exception. " +
+                            "Is your input filename correct? (Example: default.txt)" + creatingException);
+                }
             else {
-                System.out.println("Regular expression: ");
+                System.out.println("Regular expression: (separator of words = \\s)");
                 inputStr();
-                dict = new Dict(line, path);
+                try {
+                    dict = new Dict(line, path);
+                } catch (Exception creatingException) {
+                    System.out.println("Opening exception. " +
+                            "Is your input filename correct? (Example: default.txt)" + creatingException);
+                }
             }
         } else {
             System.out.println("Could not to create dictionary. Check symbols in name of file.");
@@ -63,18 +74,43 @@ public class Console {
 
     private void openDict() {
         System.out.println("What dictionary do you want to open?");
-        String[] dicts = Utils.getAllAvailableDictionaries();
+        ArrayList<String> availableDicts = Utils.getAllAvailableDictionaries();
+        for(String dict : availableDicts)
+            System.out.println(dict);
+        String[] dicts = Utils.getAllFilesAsBuffer();
         System.out.println("Input a number of file:");
         inputInt();
-        dict = new Dict(dicts[option - 1]); // Смещение на 1 (индексация массива)
-        System.out.println("Спецификация словаря: " + dict.getRegExp());
+        try {
+            dict = new Dict(dicts[option - 1]); // Смещение на 1 (индексация массива)
+        } catch (Exception openingException) {
+            System.out.println("Opening exception. " +
+                    "Are you using existing file and access not denied? " + openingException);
+        }
+        try {
+            System.out.println("Спецификация словаря: " + dict.getRegExp());
+        } catch (Exception openingException) {
+            System.out.println("Opening exception. " +
+                    "Are you using existing file and access not denied? " + openingException);
+        }
     }
 
     private void showAllLines() {
-        int linesCount = dict.getQuantityOfLines();
-        System.out.println("");
+        int linesCount = 0;
+        try {
+            linesCount = dict.getQuantityOfLines();
+        } catch (Exception openingException) {
+            System.out.println("Opening exception. " +
+                    "Are you using existing file and access not denied? " + openingException);
+        }
+
+        System.out.println();
         System.out.println("Quantity of lines: " + linesCount);
-        StringBuffer content = dict.showContent();
+        StringBuffer content = null;
+        try {
+            content = dict.showContent();
+        } catch (Exception fileAccessException) {
+            System.out.println();
+        }
         System.out.println(content);
     }
 
@@ -85,29 +121,46 @@ public class Console {
 
     private void add() {
         if (dict == null) {
-            System.out.println("");
+            System.out.println();
             System.out.println("Firstly choose an existing file or create new.");
-            System.out.println("");
+            System.out.println();
         } else {
             System.out.println("Input string you want to add:");
             if (inputStr())
-                System.out.println(dict.add(line));
+                try {
+                    System.out.println(dict.add(line));
+                } catch (Exception fileAccessException) {
+                    System.out.println("File access exception. " +
+                            "Make sure you work with not used and existing file.");
+                }
         }
     }
 
     private void find() {
         System.out.println("Input key to find note: ");
         inputStr();
-        StringBuffer result = dict.find(line);
-        System.out.println("");
+        StringBuffer result = new StringBuffer();
+        try {
+            result = dict.find(line);
+        } catch (Exception openingException) {
+            System.out.println("Opening exception. " +
+                    "Are you using existing file and access not denied? " + openingException);
+        }
+
+        System.out.println();
         System.out.println(result);
-        System.out.println("");
+        System.out.println();
     }
 
     private void delete() {
         System.out.println("Input key to delete note: ");
         inputStr();
-        dict.delete(line);
+        try {
+            dict.delete(line);
+        } catch (Exception openingException) {
+            System.out.println("Opening exception. " +
+                    "Are you using existing file and access not denied? " + openingException);
+        }
     }
     private void dictUsedNow() {
         System.out.println(dict.usedNow());

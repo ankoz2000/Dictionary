@@ -9,12 +9,8 @@ public class MyFile {
     private String configString; // example: $cfg::regExp1\n
     private PrintWriter writer;
     private FileReader reader;
-    private boolean isOpen = false;
 
-
-    MyFile() { filepath = "default.txt"; }
-
-    MyFile(String filepath) {
+    MyFile(String filepath) throws Exception {
         setFilePath(filepath);
         // Дефолтное значение длины слов - 4
         setConfigString(String.format("[a-zA-Z]{%d}\\s[а-яА-Я]{%d}",
@@ -27,25 +23,15 @@ public class MyFile {
             String line = Utils.getDefaultRegExp();
             writeConfigString(line);
         }
-        setStateOpened();
     }
 
-    MyFile(String filepath, String configString) {
+    MyFile(String filepath, String configString) throws Exception{
         setFilePath(filepath);
         setConfigString(configString);
         openFile();
         if (getRegExp().equals("")) {
             writeConfigString(configString);
         }
-        setStateOpened();
-    }
-
-    private void setStateOpened() {
-        isOpen = true;
-    }
-
-    private void setStateClose() {
-        isOpen = false;
     }
 
     protected void setConfigString(String configString) {
@@ -55,82 +41,52 @@ public class MyFile {
     protected void setFilePath(String filepath) { this.filepath = filepath; }
 
     private void closeFile() {
-        setStateClose();
         writer.close();
     }
 
-    private void writeConfigString(String configString) {
+    private void writeConfigString(String configString) throws Exception{
         writeFirstString("$cfg::" + configString + "\n");
     }
 
-    private void openFile() {
+    private void openFile() throws Exception {
         try {
             fileDescriptor = new File(filepath);
 
             if (fileDescriptor.createNewFile()) {
-                System.out.println("File created successfully!");
                 writeConfigString(configString);
-            } else {
-                System.out.println("Action done!");
             }
         } catch (IOException exception) {
-            System.out.println("Error while opening/creating file: " + exception);
+            throw new Exception("FileAccessException");
         }
     }
 
-    private void writeFirstString(String configString) {
+    private void writeFirstString(String configString) throws Exception {
         try {
             writer = new PrintWriter(fileDescriptor);
         } catch (IOException exception) {
-            System.out.println("Error while writing to file: " + exception);
+            throw new Exception("WriteFirstStringException");
         }
         writer.write(configString);
         closeFile();
     }
 
-    public void add(String newString) {
+    public void add(String newString) throws Exception{
         openFile();
         try {
             writer = new PrintWriter(new FileWriter(fileDescriptor, true));
         } catch (IOException exception) {
-            System.out.println("Error while writing to file: " + exception);
+            throw new Exception("AddingNewStringException");
         }
         writer.println(newString);
 
         closeFile();
     }
 
-    public StringBuffer readFromFile(int start, int end) { // Сколько позиций читать?
+    public StringBuffer readFullFile() throws Exception{
         try {
             reader = new FileReader(filepath);
         } catch (IOException exception) {
-            System.out.println("Error while reading file: " + exception);
-        }
-        BufferedReader bufferedReader = new BufferedReader(reader);
-        StringBuffer outputBuffer = new StringBuffer("\nOut:\n");
-        /* Чтение из файла информации */
-        if (start == end) end += 1; // Если задали промежуток (3, 3) то прочтёт только 3 строку
-        for(int i = start; i < end; i++) {
-            try {
-                outputBuffer.append(bufferedReader.readLine());
-            } catch (IOException exception) {
-                System.out.println("End of file reached: " + exception);
-            }
-        }
-            System.out.println(); // Нужна проверка на возвращаемый NULL ?
-        try{
-            bufferedReader.close();
-        } catch (IOException exception) {
-            System.out.println("Readable file cannot be closed");
-        }
-        return outputBuffer;
-    }
-
-    public StringBuffer readFullFile() {
-        try {
-            reader = new FileReader(filepath);
-        } catch (IOException exception) {
-            System.out.println("Error while reading file: " + exception);
+            throw new Exception("FileAccessException");
         }
         BufferedReader bufferedReader = new BufferedReader(reader);
         StringBuffer outputBuffer = new StringBuffer("\nOut:\n");
@@ -142,17 +98,17 @@ public class MyFile {
                 lines = bufferedReader.readLine();
             }
         } catch (IOException exception) {
-            System.out.println("Error while readFull(): " + exception);
+            throw new Exception("FileAccessException");
         }
         return outputBuffer;
     }
 
-    protected StringBuffer find(String key) {
+    protected StringBuffer find(String key) throws Exception{
         StringBuffer outputBuffer = new StringBuffer("Out: ");
         try {
             reader = new FileReader(filepath);
         } catch (IOException exception) {
-            System.out.println("Error while reading file: " + exception);
+            throw new Exception("FileAccessException");
         }
         BufferedReader bufferedReader = new BufferedReader(reader);
         try {
@@ -164,23 +120,23 @@ public class MyFile {
                 line = bufferedReader.readLine();
             }
         } catch (IOException exception) {
-            System.out.println("Error while find(): " + exception);
+            throw new Exception("FileAccessException");
         }
         return outputBuffer;
     }
 
-    protected void deleteString(String key) {
+    protected void deleteString(String key) throws Exception{
         /* Работает */
         File sourceFile = new File(fileDescriptor.getAbsolutePath()); // Ссылочная переменная
         ArrayList<String> stringArrayList = new ArrayList<>();
-        BufferedReader bufferedReader = null;
-        PrintWriter writer = null;
+        BufferedReader bufferedReader;
+        PrintWriter writer;
 
         try {
             reader = new FileReader(sourceFile);
             bufferedReader = new BufferedReader(reader);
         } catch (FileNotFoundException FNFE) {
-            System.out.println("Error with delete(): " + FNFE);
+            throw new Exception("FileAccessException");
         }
         try {
             int i = 0;
@@ -192,7 +148,7 @@ public class MyFile {
                 }
             }
         } catch (IOException ioException) {
-            System.out.println("Error with delete(): " + ioException);
+            throw new Exception("FileAccessException");
         }
         try {
             bufferedReader.close();
@@ -206,20 +162,20 @@ public class MyFile {
                 else writer.append(line);
             }
         } catch (IOException ioException) {
-            System.out.println("Error with delete(): " + ioException);
+            throw new Exception("FileAccessException");
         }
         try {
             writer.close();
         } catch (NullPointerException nullPointerException) {
-            System.out.println("NullPonterException: " + nullPointerException);
+            throw new Exception("FileNotExistsException");
         }
     }
 
-    protected int getQuantityOfLines() {
+    protected int getQuantityOfLines() throws Exception{
         try {
             reader = new FileReader(filepath);
         } catch (IOException exception) {
-            System.out.println("Error while reading file: " + exception);
+            throw new Exception("FileAccessException");
         }
         BufferedReader bufferedReader = new BufferedReader(reader);
         int linesCount = 0;
@@ -231,26 +187,26 @@ public class MyFile {
                 line = bufferedReader.readLine();
             }
         } catch (IOException exception) {
-            System.out.println("Error counting file lines: " + exception);
+            throw new Exception("FileAccessException");
         }
         return linesCount;
     }
 
     protected String getFileName() { return fileDescriptor.getName(); }
 
-    protected String getRegExp() {
-        String line = "";
+    protected String getRegExp() throws Exception{
+        String line;
         try {
             reader = new FileReader(fileDescriptor);
         } catch (IOException exception) {
-            System.out.println("Error while reading file: " + exception);
+            throw new Exception("FileAccessException");
         }
         BufferedReader bufferedReader = new BufferedReader(reader);
         try {
             line = bufferedReader.readLine();
             if (line == null) return Utils.getDefaultRegExp();
         } catch (IOException exception) {
-            System.out.println("Error finding RegExp: " + exception);
+            throw new Exception("FileAccessException");
         }
         return line;
     }
