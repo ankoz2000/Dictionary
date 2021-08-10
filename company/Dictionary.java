@@ -14,11 +14,4 @@ public interface Dictionary {
     String usedNow();
     String getRegExp();
 
-    static boolean isCorrectPath(String nameOfFile) {
-        return Pattern.matches("^.+[a-zA-Z]\\.(txt)$", nameOfFile);
-    }
-    static String[] getAllAvailableDictionaries() {
-        Utils.showAllFiles();
-        return Utils.getAllFilesAsBuffer();
-    }
 }

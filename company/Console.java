@@ -43,7 +43,7 @@ public class Console {
     private void createDict() {
         System.out.println("Write your diction file path or name of file: ");
         inputStr();
-        if(Dictionary.isCorrectPath(line)) {
+        if(Utils.isCorrectPath(line)) {
             String path = line;
             System.out.println("Would you like to specify regular expression for dictionary you're creating? " +
                     "If no, default regular expression will be " + Utils.getDefaultRegExp());
@@ -63,7 +63,7 @@ public class Console {
 
     private void openDict() {
         System.out.println("What dictionary do you want to open?");
-        String[] dicts = Dictionary.getAllAvailableDictionaries();
+        String[] dicts = Utils.getAllAvailableDictionaries();
         System.out.println("Input a number of file:");
         inputInt();
         dict = new Dict(dicts[option - 1]); // Смещение на 1 (индексация массива)

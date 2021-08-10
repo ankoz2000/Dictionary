@@ -169,13 +169,14 @@ public class MyFile {
     }
 
     protected void deleteString(String key) {
+        /* Работает */
         File outputFile = new File("Dist.txt");
-
+        File sourceFile = new File(fileDescriptor.getAbsolutePath()); // Ссылочная переменная
         BufferedReader bufferedReader = null;
         PrintWriter writer = null;
 
         try {
-            reader = new FileReader(filepath);
+            reader = new FileReader(sourceFile);
             bufferedReader = new BufferedReader(reader);
             writer = new PrintWriter(outputFile);
         } catch (FileNotFoundException FNFE) {
@@ -201,13 +202,16 @@ public class MyFile {
 
         String absoluteFilePath = fileDescriptor.getAbsolutePath();
         System.out.println("file name: " + absoluteFilePath);
-        if(fileDescriptor.delete())
+        /* ***** */
+        /* Не работает */
+        if(sourceFile.delete())
             System.out.println("String successfully deleted");
         else System.out.println("Not deleted");
         System.out.println(absoluteFilePath);
-        if(outputFile.renameTo(new File(absoluteFilePath)))
+        if(outputFile.renameTo(sourceFile))
             System.out.println("Successfully renamed");
         else System.out.println("Not renamed");
+        /* ***** */
     }
 
     protected int getQuantityOfLines() {

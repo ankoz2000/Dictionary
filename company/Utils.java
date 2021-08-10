@@ -1,6 +1,7 @@
 package com.company;
 
 import java.io.File;
+import java.util.regex.Pattern;
 
 public class Utils {
     static File folder = new File("./");
@@ -54,5 +55,13 @@ public class Utils {
         if(fileName.lastIndexOf(".") != -1 && fileName.lastIndexOf(".") != 0)
             return fileName.substring(fileName.lastIndexOf(".") + 1); // Вырезать все знаки после точки
         else return "";
+    }
+
+    static boolean isCorrectPath(String nameOfFile) {
+        return Pattern.matches("^.+[a-zA-Z]\\.(txt)$", nameOfFile);
+    }
+    static String[] getAllAvailableDictionaries() {
+        Utils.showAllFiles();
+        return Utils.getAllFilesAsBuffer();
     }
 }
