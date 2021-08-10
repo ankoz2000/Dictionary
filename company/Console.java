@@ -227,9 +227,9 @@ public class Console {
                 }
             }
         } catch (ArrayIndexOutOfBoundsException ofbException) {
-            System.out.println("");
+            System.out.println();
             System.out.println("There are no function with this number. Try another number");
-            System.out.println("");
+            System.out.println();
         }
     }
 
@@ -245,7 +245,7 @@ public class Console {
         } catch (NullPointerException e) {
             System.out.println("Firstly elect dictionary." + e);
         }
-        System.out.println("");
+        System.out.println();
     }
 
     public static void main(String[] args) {
