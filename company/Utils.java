@@ -13,7 +13,7 @@ public class Utils {
         int i = 0;
         ArrayList<String> fileEntryList = new ArrayList<>();
         for(File fileEntry : folder.listFiles()) {
-            if(fileEntry.isFile() && (getFileExtension(fileEntry).equals("txt"))) {
+            if(fileEntry.isFile() && "txt".equals(getFileExtension(fileEntry))) {
                 fileEntryList.add((++i) + ". " + fileEntry.getName());
             }
         }

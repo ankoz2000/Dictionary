@@ -1,6 +1,6 @@
 package com.company;
 
-class Dict implements Dictionary {
+class Dict implements Dictionary<Dict> {
     private String path = "default.txt";
     private MyFile file;
     Dict() throws Exception {
@@ -18,12 +18,26 @@ class Dict implements Dictionary {
     }
 
     @Override
+    public Dict create(String regExp, String dictionaryName) throws Exception{
+        return new Dict(regExp, dictionaryName);
+    }
+
+    public Dict create(String dictionaryName) throws Exception{
+        return new Dict(dictionaryName);
+    }
+
+    @Override
+    public Dict open(String name) throws Exception{
+        return create(name);
+    }
+
+    @Override
     public void delete(String key) throws Exception{
         file.deleteString(key);
     }
 
     @Override
-    public int getQuantityOfLines() throws Exception {
+    public int getQuantityOfNotes() throws Exception {
         return file.getQuantityOfLines();
     }
 

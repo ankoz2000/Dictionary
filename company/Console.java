@@ -51,7 +51,7 @@ public class Console {
             getYesOrNo();
             if(Options.values()[option] == Options.NO)
                 try {
-                    dict = new Dict(line);
+                    dict = dict.create(line);
                 } catch (Exception creatingException) {
                     System.out.println("Opening exception. " +
                             "Is your input filename correct? (Example: default.txt)" + creatingException);
@@ -60,7 +60,7 @@ public class Console {
                 System.out.println("Regular expression: (separator of words = \\s)");
                 inputStr();
                 try {
-                    dict = new Dict(line, path);
+                    dict = dict.create(line, path);
                 } catch (Exception creatingException) {
                     System.out.println("Opening exception. " +
                             "Is your input filename correct? (Example: default.txt)" + creatingException);
@@ -81,7 +81,7 @@ public class Console {
         System.out.println("Input a number of file:");
         inputInt();
         try {
-            dict = new Dict(dicts[option - 1]); // Смещение на 1 (индексация массива)
+            dict = dict.open(dicts[option - 1]); // Смещение на 1 (индексация массива)
         } catch (Exception openingException) {
             System.out.println("Opening exception. " +
                     "Are you using existing file and access not denied? " + openingException);
@@ -97,7 +97,7 @@ public class Console {
     private void showAllLines() {
         int linesCount = 0;
         try {
-            linesCount = dict.getQuantityOfLines();
+            linesCount = dict.getQuantityOfNotes();
         } catch (Exception openingException) {
             System.out.println("Opening exception. " +
                     "Are you using existing file and access not denied? " + openingException);
